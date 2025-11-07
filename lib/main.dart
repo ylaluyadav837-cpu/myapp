@@ -5,8 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/home_screen.dart';
-import 'screens/needs_screen.dart';
-import 'screens/offers_screen.dart';
+import 'screens/post_screen.dart';
+import 'screens/search_screen.dart';
+import 'screens/map_screen.dart';
 import 'screens/profile_screen.dart';
 
 void main() {
@@ -38,15 +39,21 @@ final GoRouter _router = GoRouter(
       },
       routes: <RouteBase>[
         GoRoute(
-          path: 'needs',
+          path: 'post',
           builder: (BuildContext context, GoRouterState state) {
-            return const NeedsScreen();
+            return const PostScreen();
           },
         ),
         GoRoute(
-          path: 'offers',
+          path: 'search',
           builder: (BuildContext context, GoRouterState state) {
-            return const OffersScreen();
+            return const SearchScreen();
+          },
+        ),
+        GoRoute(
+          path: 'map',
+          builder: (BuildContext context, GoRouterState state) {
+            return const MapScreen();
           },
         ),
         GoRoute(
@@ -111,7 +118,7 @@ class PadosiApp extends StatelessWidget {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.black,
-          backgroundColor: primarySeedColor.shade200,
+          backgroundColor: Colors.deepPurple[200],
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           textStyle: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
