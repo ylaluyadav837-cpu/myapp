@@ -1,62 +1,63 @@
-# Padosi: Your Hyper-Local Social Network
+# Padosi App Blueprint
 
 ## Overview
 
-Padosi is a next-generation social app designed to foster real-world connections within your neighborhood. The app prioritizes utility and immediate needs, allowing users to connect with verified neighbors within a 1 KM radius.
+Padosi is a social networking application that connects people in a neighborhood. It allows users to share posts, view a map of their surroundings, and interact with other users.
 
-## Key Features
+## Style and Design
 
-*   **Real-Time Utility:** Post urgent "Needs," "Offers," and "Now-Events" that are prominently displayed in the local feed.
-*   **Flexible Posting:** Users have full control over their posts, which do not auto-delete.
-*   **Full Social Profile:** Instagram-style profiles with ratings and a history of helpfulness.
-*   **Follow & Chat:** Follow trusted neighbors and engage in secure, direct conversations.
-*   **Modern UI:** A beautiful and intuitive user interface built with Flutter and Material Design 3.
-*   **Responsive Design:** The app will be responsive and work seamlessly on both mobile and web.
+The app uses the default Flutter Material theme. The primary color is blue, and the font is the default Roboto font.
 
-## Development Plan
+## Features
 
-### Iteration 1: Core Structure and UI
+### 1. Authentication
 
-1.  **Project Setup:**
-    *   Add necessary dependencies: `google_fonts`, `provider`, and `go_router`.
-    *   Configure the main theme, including color schemes and typography.
-2.  **Directory Structure:**
-    *   Create a scalable project structure with folders for screens, widgets, services, and models.
-3.  **Basic UI and Navigation:**
-    *   Implement a bottom navigation bar for easy access to the main sections of the app (Home, Needs, Offers, Profile).
-    *   Set up `go_router` for declarative navigation.
-    *   Create placeholder screens for each section.
+*   **Login/Signup:** Users can create an account or log in using their email and password. (This feature is not yet implemented).
 
-### Iteration 2: Feed and Posting
+### 2. Main Feed
 
-1.  **Feed UI:**
-    *   Design and build the main feed to display "Needs," "Offers," and "Now-Events."
-    *   Create custom widgets for feed items.
-2.  **Posting Functionality:**
-    *   Implement a "create post" screen where users can select the type of post (Need, Offer, Now-Event) and add content.
-    *   Develop the logic to handle post creation and display it in the feed.
+*   **Post List:** Displays a chronological list of posts from other users in the neighborhood.
+*   **Custom Icon:** The paper plane icon in the app bar has been replaced with a custom image.
 
-### Iteration 3: User Profiles
+### 3. Post Creation
 
-1.  **Profile Screen:**
-    *   Create the user profile screen, displaying user information, ratings, and a history of their posts.
-    *   Implement a "follow" button.
-2.  **Profile Editing:**
-    *   Allow users to edit their profile information.
+*   **Image and Video Upload:** Users can create new posts by uploading photos or videos from their gallery or by using the camera.
+*   **Captions:** Users can add text captions to their posts.
 
-### Iteration 4: Chat
+### 4. Map View
 
-1.  **Chat UI:**
-    *   Design and build the chat interface for direct messaging between users.
-2.  **Chat Logic:**
-    *   Implement the logic for sending and receiving messages.
-    *   Ensure that chat is only available between users who follow each other.
+*   **World Map:** Displays a Google Map of the world.
+*   **Markers:** A marker is placed on San Francisco as a default location.
 
-### Iteration 5: Backend Integration (Future)
+### 5. Profile
 
-1.  **Firebase Setup:**
-    *   Integrate Firebase for authentication, Firestore database, and storage.
-2.  **User Authentication:**
-    *   Implement user registration and login.
-3.  **Data Persistence:**
-    *   Store user data, posts, and chats in Firestore.
+*   **User Profile:** Displays the user's profile information, including a profile picture, stats (posts, followers, following), a bio, and action buttons.
+*   **Profile Layout:** The user's name, bio, and pronouns are now displayed directly below the profile picture. The "Likes," "Comments," and "Search" widgets are positioned below the "Posts," "Followers," and "Following" stats.
+*   **Additional Stats:** The profile screen now also displays the total number of likes and comments the user has received.
+*   **Search:** A search icon allows users to search for content within the user's profile.
+*   **Save Button:** A save button has been added to the app bar, allowing users to save posts or other content.
+*   **Post Grid:** Shows a grid of the user's posts.
+*   **Tabbed Content:**  A tab bar allows users to switch between different sections of their profile, such as their posts and other content.
+*   **Edit Profile:** A dedicated screen allows users to edit their profile information, including their name, username, bio, and more. When the user saves their changes, the profile screen is updated to reflect the new information.
+
+### 6. Search
+
+*   **Search Bar:** The search screen now includes a search bar in the app bar, allowing users to search for any ID.
+
+### 7. Settings
+
+*   **Appearance:**
+    *   **Theme Mode:** Allows users to switch between light, dark, and system default themes.
+    *   **Chat Background:** Allows users to customize their chat background.
+        *   **Colors:** Users can choose a solid color for their chat background.
+        *   **Wallpapers:** Users can select from a predefined list of wallpapers.
+        *   **Gallery:** Users can select an image from their device's gallery to use as a chat background.
+
+### 8. Tadka
+
+*   **Tadka Button:** A "Tadka" button with a custom icon has been added to the app bar on the home screen.
+*   **Tadka Screen:** Tapping the "Tadka" button navigates to a new screen dedicated to "Tadka" content.
+
+## Current Plan
+
+*   No active plan.
