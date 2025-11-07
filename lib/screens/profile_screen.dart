@@ -5,28 +5,47 @@ import 'package:padosi/providers/user_profile_provider.dart';
 import 'package:padosi/screens/edit_profile_screen.dart';
 import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final userProfileProvider = Provider.of<UserProfileProvider>(context);
-    final userProfile = userProfileProvider.userProfile;
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
 
-    return DefaultTabController(
-      length: 3,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, _) {
-          return [SliverToBoxAdapter(child: _buildProfileHeader(context, userProfile, userProfileProvider))];
-        },
-        body: TabBarView(
-          children: [
-            _buildPostGrid(),
-            const Center(child: Text('Coming Soon!')),
-            const Center(child: Text('Coming Soon!')),
-          ],
-        ),
-      ),
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch the user profile when the screen is initialized
+    Provider.of<UserProfileProvider>(context, listen: false).fetchUserProfile();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<UserProfileProvider>(
+      builder: (context, userProfileProvider, child) {
+        final userProfile = userProfileProvider.userProfile;
+
+        if (userProfile == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return DefaultTabController(
+          length: 3,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, _) {
+              return [SliverToBoxAdapter(child: _buildProfileHeader(context, userProfile, userProfileProvider))];
+            },
+            body: TabBarView(
+              children: [
+                _buildPostGrid(),
+                const Center(child: Text('Coming Soon!')),
+                const Center(child: Text('Coming Soon!')),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

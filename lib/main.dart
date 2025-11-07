@@ -7,10 +7,18 @@ import 'package:padosi/screens/likes_screen.dart';
 import 'package:padosi/screens/profile_screen.dart';
 import 'package:padosi/screens/shares_screen.dart';
 import 'package:padosi/screens/tadka_screen.dart';
+import 'package:padosi/screens/wrapper.dart';
+import 'package:padosi/services/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -19,9 +27,15 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return const HomeScreen();
+        return const Wrapper();
       },
       routes: <RouteBase>[
+        GoRoute(
+          path: 'home',
+          builder: (BuildContext context, GoRouterState state) {
+            return const HomeScreen();
+          },
+        ),
         GoRoute(
           path: 'tadka',
           builder: (BuildContext context, GoRouterState state) {
@@ -62,8 +76,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => UserProfileProvider(),
+    return MultiProvider(
+      providers: [
+        Provider<AuthService>(
+          create: (_) => AuthService(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserProfileProvider(),
+        ),
+      ],
       child: MaterialApp.router(
         routerConfig: _router,
         title: 'Padosi',
@@ -74,4 +95,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
