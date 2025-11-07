@@ -1,5 +1,11 @@
+
+import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../models/user_profile.dart';
+import 'package:padosi/models/user_profile.dart';
+import 'package:padosi/providers/user_profile_provider.dart';
+import 'package:padosi/services/storage_service.dart';
+import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final UserProfile userProfile;
@@ -15,6 +21,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _usernameController;
   late TextEditingController _pronounsController;
   late TextEditingController _bioController;
+
+  final StorageService _storageService = StorageService();
+  File? _image;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -34,15 +44,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  void _onDone() {
+  void _pickImage() async {
+    final image = await _storageService.pickImage();
+    if (image != null) {
+      setState(() {
+        _image = image;
+      });
+    }
+  }
+
+  void _onDone() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    String? imageUrl = widget.userProfile.profileImageUrl;
+    if (_image != null) {
+      imageUrl = await _storageService.uploadProfileImage(user.uid, _image!);
+    }
+
     final updatedProfile = UserProfile(
       name: _nameController.text,
       username: _usernameController.text,
       pronouns: _pronounsController.text,
       bio: _bioController.text,
-      profileImageUrl: widget.userProfile.profileImageUrl,
+      profileImageUrl: imageUrl ?? widget.userProfile.profileImageUrl,
     );
-    Navigator.of(context).pop(updatedProfile);
+
+    // ignore: use_build_context_synchronously
+    Provider.of<UserProfileProvider>(context, listen: false).updateUserProfile(updatedProfile);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).pop();
   }
 
   @override
@@ -56,41 +96,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ],
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 40,
-                backgroundImage: NetworkImage(widget.userProfile.profileImageUrl),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: _image != null ? FileImage(_image!) : NetworkImage(widget.userProfile.profileImageUrl) as ImageProvider,
+                    ),
+                    TextButton(
+                      onPressed: _pickImage,
+                      child: const Text('Change profile photo'),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(label: 'Name', controller: _nameController),
+                    _buildTextField(label: 'Username', controller: _usernameController),
+                    _buildTextField(label: 'Pronouns', controller: _pronounsController),
+                    _buildTextField(label: 'Bio', controller: _bioController, maxLines: 4),
+                  ],
+                ),
               ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('Change profile photo'),
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(label: 'Name', controller: _nameController),
-              _buildTextField(label: 'Username', controller: _usernameController),
-              _buildTextField(label: 'Pronouns', controller: _pronounsController),
-              _buildTextField(label: 'Bio', controller: _bioController, maxLines: 4),
-              const SizedBox(height: 16),
-              const Divider(),
-              _buildTappableField(label: 'Links', value: '1'),
-              const Divider(),
-              const SizedBox(height: 16),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Profile information', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              ),
-              const SizedBox(height: 8),
-              _buildTappableField(label: 'Page', value: 'Connect or create'),
-              _buildTappableField(label: 'Category', value: 'Marketing Agency'),
-              _buildTappableField(label: 'Contact options', value: 'Email'),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -109,22 +138,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           border: const UnderlineInputBorder(),
         ),
       ),
-    );
-  }
-
-  Widget _buildTappableField({required String label, required String value}) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(label),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(value, style: const TextStyle(color: Colors.grey)),
-          const SizedBox(width: 8),
-          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-        ],
-      ),
-      onTap: () {},
     );
   }
 }
